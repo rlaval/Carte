@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .city-section {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            width: 300px;
+            background-color: #f9f9f9;
+        }
+
+        .section {
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .section button {
+            margin: 5px 5px 5px 0;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tableau de Bord</h1>
+    <div class="dashboard" id="dashboard"></div>
+
+    <script>
+        // Liste des villes présentes sur la carte
+        const villes = [
+            "Ussel", "Tulle", "Brive-la-Gaillarde", "Gourdon", "Figeac", "Cahors", 
+            "Mauriac", "Aurillac", "Saint-Flour", "Villefranche-de-Rouergue", 
+            "Decazeville", "Rodez", "Millau", "Mende", "Florac", "Castelsarrasin", 
+            "Montauban", "Albi", "Castres", "Laguiole"
+        ];
+
+        // Générer les boutons pour chaque section
+        function generateButtons(ville) {
+            return `
+                <div class="section">
+                    <div class="section-title">Orages</div>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/storm-128-high.png')">Niveau 1</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/storm-128.gif')">Niveau 2</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/storm-128-1-high.png')">Niveau 3</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/storm-128-2-high.png')">Niveau 4</button>
+                </div>
+                <div class="section">
+                    <div class="section-title">Pluies</div>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/rain-128-high.png')">Niveau 1</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/rain-128-1-high.png')">Niveau 2</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/rain-128-2-high.png')">Niveau 3</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/rain-128-3-high.png')">Niveau 4</button>
+                </div>
+                <div class="section">
+                    <div class="section-title">Grêle</div>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/hail-128-high.png')">Niveau 1</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/hail-128-1-high.png')">Niveau 2</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/hail-128-2-high.png')">Niveau 3</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/hail-128-3-high.png')">Niveau 4</button>
+                </div>
+                <div class="section">
+                    <div class="section-title">Neige</div>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/snow-storm-128-high.png')">Niveau 1</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/snow-storm-128-1-high.png')">Niveau 2</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/snow-storm-128-2-high.png')">Niveau 3</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/snow-storm-128-3-high.png')">Niveau 4</button>
+                </div>
+                <div class="section">
+                    <div class="section-title">Autres conditions</div>
+                    <button onclick="updateMarker('${ville}','https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/orange_sun_wild_west_vector_pixel_art-high.webp')">Soleil</button>
+                    <button onclick="updateMarker('${ville}','https://static.vecteezy.com/system/resources/previews/023/258/075/non_2x/weather-icon-cloudy-sky-icon-free-png.png')">Nuageux</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/design_sans_titre__5_-removebg-preview-high.png')">Nuages+Soleil</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/design_sans_titre__6_-removebg-preview-high.png')">Pluie+Soleil</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/little-rain-128-high.png')">Pluie faible</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/rain-128-high.png')">Pluie forte</button>
+                    <button onclick="updateMarker('${ville}', 'https://primary.jwwb.nl/public/q/t/q/temp-uozhroxmecrdemnjgoky/fog-day-128-high.png')">Brouillard</button>
+                </div>
+            `;
+        }
+
+        // Générer le tableau de bord
+        const dashboard = document.getElementById('dashboard');
+        villes.forEach(ville => {
+            const citySection = document.createElement('div');
+            citySection.className = 'city-section';
+            citySection.innerHTML = `<h3>${ville}</h3>` + generateButtons(ville);
+            dashboard.appendChild(citySection);
+        });
+
+        // Fonction pour mettre à jour un marqueur
+function updateMarker(ville, iconUrl) {
+    localStorage.setItem(ville, iconUrl); // Enregistre l'icône pour la ville dans localStorage
+    alert(`Icône mise à jour pour ${ville} avec l'image : ${iconUrl}`);
+}
+
+    </script>
+</body>
+</html>
