@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Interactive</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+const villes = [
+            { nom: "Ussel", lat: 45.547, lng: 2.312 },
+            { nom: "Tulle", lat: 45.266, lng: 1.772 },
+            { nom: "Brive-la-Gaillarde", lat: 45.158, lng: 1.532 },
+            { nom: "Gourdon", lat: 44.738, lng: 1.382 },
+            { nom: "Figeac", lat: 44.608, lng: 2.031 },
+            { nom: "Cahors", lat: 44.448, lng: 1.440 },
+            { nom: "Mauriac", lat: 45.218, lng: 2.329 },
+            { nom: "Aurillac", lat: 44.926, lng: 2.441 },
+            { nom: "Saint-Flour", lat: 45.033, lng: 3.091 },
+            { nom: "Villefranche-de-Rouergue", lat: 44.353, lng: 2.039 },
+            { nom: "Decazeville", lat: 44.559, lng: 2.253 },
+            { nom: "Rodez", lat: 44.351, lng: 2.575 },
+            { nom: "Millau", lat: 44.101, lng: 3.082 },
+            { nom: "Mende", lat: 44.520, lng: 3.501 },
+            { nom: "Florac", lat: 44.323, lng: 3.588 },
+            { nom: "Castelsarrasin", lat: 44.041, lng: 1.108 },
+            { nom: "Montauban", lat: 44.021, lng: 1.349 },
+            { nom: "Albi", lat: 43.927, lng: 2.148 },
+            { nom: "Castres", lat: 43.604, lng: 2.238 },
+            { nom: "Laguiole", lat: 44.680, lng: 2.843 }
+        ];
+
+// Initialiser la carte
+const map = L.map('map').setView([45.75, 2.5], 7); // Centrée sur une région générale
+
+// Ajouter une couche de tuiles (exemple OpenStreetMap)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// Ajouter les marqueurs
+villes.forEach(ville => {
+    // Récupérer l'icône stockée pour cette ville
+    const savedIconUrl = localStorage.getItem(ville.nom) || 'default-marker.png'; // Icône par défaut
+
+    // Définir l'icône
+    const icon = L.icon({
+        iconUrl: savedIconUrl,
+        iconSize: [36, 36], // Taille de l'icône
+        iconAnchor: [25, 50], // Ancre de l'icône
+        popupAnchor: [0, -50] // Position de la popup
+    });
+
+    // Créer le marqueur avec l'icône
+    const marker = L.marker([ville.lat, ville.lng], { icon }).addTo(map);
+
+    // Ajouter une popup
+    marker.bindPopup(`<strong>${ville.nom}</strong><br>Météo actuelle :`);
+
+    // Écouter les mises à jour pour changer l'icône
+    marker.on('click', () => {
+        const updatedIconUrl = localStorage.getItem(ville.nom);
+        if (updatedIconUrl) {
+            const newIcon = L.icon({
+                iconUrl: updatedIconUrl,
+                iconSize: [36, 36],
+                iconAnchor: [25, 50],
+                popupAnchor: [0, -50]
+            });
+            marker.setIcon(newIcon);
+        }
+    });
+});
+
+    </script>
+</body>
+</html>
